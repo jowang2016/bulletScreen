@@ -4,10 +4,11 @@ class Model {
     this.table = table
     connection.connect()
   }
-  query (sql, limit=0) {
-    let start = Number(limit)*4%16
+  query (sql, idx=0) {
     return new Promise((resolve, reject) => {
-      connection.query(`select ${sql} from ${this.table} limit ${start}, 4`, function (err, results, fields) {
+      const idx1 = Number(idx)*2%16
+      const idx2 = idx1 + 2
+      connection.query(`select ${sql} from ${this.table} where idx>=${idx1} and idx<${idx2}`, function (err, results, fields) {
         if (err) throw err
         resolve(results)
       })
