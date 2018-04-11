@@ -6,7 +6,7 @@
           <span :style="{color: _item.color, fontSize: _item.fontSize + 'px'}" v-for="(_item, _index) in item" :key="_index" @mouseenter="moCtrl(index)" @mouseleave="msCtrl(index)">{{_item.content}}</span>
         </div>
       </div>
-      <video src="../assets/bg.mp4" id="vd"></video>
+      <video src="../assets/bg.mp4" id="vd" @ended="endCtrl"></video>
       <div class="video-ctr" @click="play">
         <img src="../assets/play.png" alt="" v-show="!playStatus">
         <img src="../assets/pause.png" alt="" v-show="playStatus">
@@ -25,8 +25,16 @@ export default {
       speeds: [],
       idx: 0,
       params: [],
+      timerStopIndex: '',
       playStatus: '',
-      timerStopIndex: ''
+      vd: ''
+    }
+  },
+  watch: {
+    'playStatus': function (val) {
+      if (val) {
+        this.msCtrl(this.timerStopIndex)
+      }
     }
   },
   methods: {
@@ -77,18 +85,19 @@ export default {
       }, freq)
     },
     play () {
-      let vd = document.getElementById('vd')
-      if (vd.paused) {
-        vd.play()
+      if (this.vd.paused) {
+        this.vd.play()
         this.playStatus = true
       } else {
-        vd.pause()
+        this.vd.pause()
         this.playStatus = false
       }
     },
+    endCtrl () {
+      this.playStatus = false
+    },
     bulletCtrl () {
-      let vd = document.getElementById('vd')
-      vd.onplay = () => {
+      this.vd.onplay = () => {
         this.apiTimer = setInterval(() => {
           this.items.map((item, index) => {
             if (item) {
@@ -108,13 +117,14 @@ export default {
           this.getComments()
         }, 500)
       }
-      vd.onpause = () => {
+      this.vd.onpause = () => {
         clearInterval(this.apiTimer)
         this.timers.map(item => {
           clearInterval(item)
         })
       }
-      vd.onend = () => {
+      this.vd.onend = () => {
+        this.playStatus = true
         clearInterval(this.apiTimer)
         this.timers.map(item => {
           clearInterval(item)
@@ -124,6 +134,9 @@ export default {
   },
   created () {
     this.getComments()
+  },
+  mounted () {
+    this.vd = document.getElementById('vd')
   },
   updated () {
     this.bulletCtrl()
@@ -141,7 +154,7 @@ export default {
 <style scoped>
 .a-w{position: relative;float: left;overflow: hidden;margin-top: 60px;margin-left: 10px;}
 .b-w{position: absolute;width: 100%;height: 100%;z-index: 10;}
-.b-c{position: absolute;left: 100%;min-width: 500px;}
+.b-c{position: absolute;left: 100%;min-width: 100%;}
 .b-c span{margin-right: 15px;}
 .video-ctr{position: absolute;width: 100%;height: 50px;bottom: 0;left: 0;background: black;color: white;z-index: 20;line-height: 50px;}
 .video-ctr img{width: 40px;vertical-align: middle;}
