@@ -124,7 +124,6 @@ export default {
         })
       }
       this.vd.onend = () => {
-        this.playStatus = true
         clearInterval(this.apiTimer)
         this.timers.map(item => {
           clearInterval(item)
@@ -153,8 +152,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .a-w{position: relative;float: left;overflow: hidden;margin-top: 60px;margin-left: 10px;}
-.b-w{position: absolute;width: 100%;height: 100%;z-index: 10;}
-.b-c{position: absolute;left: 100%;min-width: 100%;}
+.b-w{position: absolute;width: 100%;height: 100%;z-index: 10;white-space: nowrap;}
+.b-c{position: absolute;left: 100%;}
 .b-c span{margin-right: 15px;}
 .video-ctr{position: absolute;width: 100%;height: 50px;bottom: 0;left: 0;background: black;color: white;z-index: 20;line-height: 50px;}
 .video-ctr img{width: 40px;vertical-align: middle;}
